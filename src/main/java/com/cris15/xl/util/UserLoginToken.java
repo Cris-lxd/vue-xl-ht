@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 /**
  *  加注解代表需要登陆才能进入的方法
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE})         //用于类注解
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserLoginToken {
     boolean required() default true;

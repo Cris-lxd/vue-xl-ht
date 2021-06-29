@@ -1,3 +1,6 @@
+app:
+  allowed-cross-orign: http://localhost:8080,http://10.237.202.137:8080,http://192.168.1.100:8080         //可跨域资源，以逗号分隔
+
 spring:
   profiles:
     active: dev

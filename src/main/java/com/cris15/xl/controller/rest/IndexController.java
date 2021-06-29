@@ -1,13 +1,11 @@
-package com.cris15.xl.Controller.rest;
+package com.cris15.xl.controller.rest;
 
-import com.cris15.xl.Controller.BaseController;
+import com.cris15.xl.controller.BaseController;
 import com.cris15.xl.util.UserLoginToken;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.RequestWrapper;
 
 /**
  * @Author: Cris_liuxd
@@ -16,7 +14,6 @@ import javax.xml.ws.RequestWrapper;
  **/
 @RestController
 @RequestMapping("/index")
-
 public class IndexController extends BaseController {
     @UserLoginToken
     @RequestMapping("/test")

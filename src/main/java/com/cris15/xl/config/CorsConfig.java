@@ -1,10 +1,15 @@
 package com.cris15.xl.config;
 
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Description: 跨域配置
@@ -15,12 +20,13 @@ import org.springframework.web.filter.CorsFilter;
  **/
 @Configuration
 public class CorsConfig {
+    @Value("${app.allowed-cross-orign}")
+    private String resourceWebSite;
+
     private CorsConfiguration buildConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         // 1 设置访问源地址
-        corsConfiguration.addAllowedOrigin("http://localhost:8080");
-        corsConfiguration.addAllowedOrigin("http://10.237.202.137:8080");
-        corsConfiguration.addAllowedOrigin("http://192.168.1.100:8080");
+        corsConfiguration.setAllowedOrigins(Arrays.asList(resourceWebSite.split(",")));
         // 2 设置访问源请求头
         corsConfiguration.addAllowedHeader("*");
         //3 设置访问源请求方法

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @Author: Cris_liuxd
  * @Date: 2021/06/22/11:32
- * @Description:
+ * @Description: 注册拦截器
  **/
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {

@@ -21,31 +21,18 @@ import java.lang.reflect.Method;
 /**
  * @Author: Cris_liuxd
  * @Date: 2021/06/22/14:04
- * @Description:
+ * @Description: 进入方法前进行处理
  **/
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
+
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {    //重写他的预处理方法
 
-
-//        if (request.getSession().getAttribute("username") == null) {     //获取到的缓存里面的用户信息若为空
-//            //response.sendRedirect("/admin");
-//            response.setCharacterEncoding("UTF-8");
-//            response.setContentType("application/json; charset=utf-8");
-//            PrintWriter out = null;
-//            JSONObject res = new JSONObject();
-//            res.put("success", false);
-//            res.put("message","未登录");
-//            res.put("code",401);
-//            out = response.getWriter();
-//            out.append(res.toString());
-//            return false;
-//        }
-//        return true;
 
             PrintWriter out = null;
             JSONObject res = new JSONObject();
@@ -90,14 +77,6 @@ public class LoginInterceptor implements HandlerInterceptor {
                         request.removeAttribute("user");
                         return false;
                     }
-//                    User user = userService.getUserById(userId);
-//                    if(user == null){
-//                        res.put("success", false);
-//                        res.put("message","用户名不存在");
-//                        out = response.getWriter();
-//                        out.append(res.toString());
-//                        return false;
-//                    }
                     int flag = JWTUtil.verify(token);
                     if(flag != 0){
                         res.put("success", false);

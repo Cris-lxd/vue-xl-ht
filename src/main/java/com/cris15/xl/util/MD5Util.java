@@ -1,6 +1,11 @@
 package com.cris15.xl.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author: Cris_liuxd
@@ -37,6 +42,6 @@ public class MD5Util {
     }
 
     public static void main(String[] args) {
-        System.out.println(string2Md5("lxl"));
+        System.out.println(string2Md5("123"));
     }
 }

@@ -1,23 +1,20 @@
-package com.cris15.xl.Controller.rest;
+package com.cris15.xl.controller.rest;
 
-import com.cris15.xl.Controller.BaseController;
+import com.cris15.xl.controller.BaseController;
 import com.cris15.xl.entity.User;
 import com.cris15.xl.servie.LoginService;
 import com.cris15.xl.util.JWTUtil;
 import com.cris15.xl.util.MD5Util;
 import com.cris15.xl.util.PassToken;
 import com.cris15.xl.util.UserLoginToken;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sun.security.provider.MD5;
-import sun.security.rsa.RSASignature;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,6 +28,7 @@ import java.util.UUID;
 @RequestMapping("/admin")
 @UserLoginToken
 public class LoginController extends BaseController {
+
     @Autowired
     private LoginService loginService;
 
