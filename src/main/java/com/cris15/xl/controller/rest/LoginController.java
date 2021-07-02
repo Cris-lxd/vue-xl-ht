@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -44,6 +45,8 @@ public class LoginController extends BaseController {
             Map map = new HashMap(2);
             map.put("user",user);
             map.put("token",token);
+            session.setAttribute("user",user);
+            session.setAttribute("token",token);
             return result(map);
         }else{
             return errorResult("用户不存在"+session.getAttribute("username"));

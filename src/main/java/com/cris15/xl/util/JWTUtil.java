@@ -19,7 +19,7 @@ import java.util.Map;
  **/
 public class JWTUtil {
     // 有效时长毫秒数
-    //private static final long EXPIRE_TIME = 30 * 60 * 1000;
+    private static final long EXPIRE_TIME = 60 * 60 * 24;
 
     // token 密钥
     private static final String TOKEN_SECRET = "testsecret";
@@ -28,7 +28,7 @@ public class JWTUtil {
     {
         try
         {
-            //Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             // 设置头部信息
             Map<String, Object> header = new HashMap<String, Object>();
@@ -37,7 +37,7 @@ public class JWTUtil {
             String token = JWT.create()
                     .withHeader(header) // header
                     .withClaim("userId", userId)
-                    //.withExpiresAt(date) // 过期时间
+                    .withExpiresAt(date) // 过期时间
                     .sign(algorithm); // 签名
             return token;
         }

@@ -9,12 +9,15 @@ import com.cris15.xl.util.PassToken;
 import com.cris15.xl.util.UserLoginToken;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
@@ -34,10 +37,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {    //重写他的预处理方法
 
 
-            PrintWriter out = null;
-            JSONObject res = new JSONObject();
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json; charset=utf-8");
+
 
             String token = request.getHeader("token");
             if(!(handler instanceof HandlerMethod)){
@@ -58,32 +58,29 @@ public class LoginInterceptor implements HandlerInterceptor {
                 UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
                 if(userLoginToken.required()){
                     if(token == null){
-                        res.put("success", false);
-                        res.put("message","无token，请重新登陆");
-                        out = response.getWriter();
-                        out.append(res.toString());
-                        request.removeAttribute("user");
+                        writeResponse(false,"无token，请重新登陆",request,response);
                         return false;
                     }
                     String userId;
                     try{
                         userId = JWTUtil.getUserId(token);
                     }catch (JWTDecodeException ex){
-                        res.put("success", false);
-                        res.put("message","身份认证失败");
-                        res.put("code",401);
-                        out = response.getWriter();
-                        out.append(res.toString());
-                        request.removeAttribute("user");
+                        writeResponse(false,"身份认证失败",request,response);
                         return false;
                     }
                     int flag = JWTUtil.verify(token);
                     if(flag != 0){
-                        res.put("success", false);
-                        res.put("message","token校验失败");
-                        out = response.getWriter();
-                        out.append(res.toString());
-                        request.removeAttribute("user");
+                        writeResponse(false,"token校验失败",request,response);
+                        return false;
+                    }
+                    String token1 = (String) request.getSession().getAttribute("token");
+                    if(token1 == null){
+                        writeResponse(false,"用户未登录",request,response);
+                        return false;
+                    }
+                    Boolean tokenStatus = token1.equals(token) == true ? true : false;
+                    if(tokenStatus == false){
+                        writeResponse(false,"token不一致,用戶信息已过期，请重新登陆",request,response);
                         return false;
                     }
                     return true;
@@ -103,5 +100,28 @@ public class LoginInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
                                 Object o, Exception e) throws Exception {
+    }
+
+    /**
+     * 返回错误信息
+     * @param code
+     * @param message
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    public void writeResponse(Boolean code,String message,HttpServletRequest request,
+                         HttpServletResponse response) throws IOException {
+        PrintWriter out = null;
+        JSONObject res = new JSONObject();
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json; charset=utf-8");
+        request.removeAttribute("user");
+        request.removeAttribute("token");
+        res.put("success", code);
+        res.put("code",401);
+        res.put("message",message);
+        out = response.getWriter();
+        out.append(res.toString());
     }
 }
