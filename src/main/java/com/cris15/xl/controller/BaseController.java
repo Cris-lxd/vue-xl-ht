@@ -24,7 +24,7 @@ public class BaseController {
         Map<String,Object> result = new HashMap<>(4);
         result.put(Result.success.name(),true);
         result.put(Result.code.name(),"0");
-        result.put(Result.message.name(), "成功");
+        result.put(Result.message.name(), "请求成功");
         result.put(Result.data.name(),data);
         return result;
     }

@@ -1,5 +1,9 @@
 package com.cris15.xl.util;
 
+import javax.xml.crypto.Data;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Author: Cris
  * Date: 2021/08/19
@@ -19,5 +23,11 @@ public class StringUtils {
             return true;
         }
         return false;
+    }
+
+    public static String dateFormat(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:MM:ss");
+        String res = sdf.format(date);
+        return res;
     }
 }
