@@ -19,7 +19,7 @@ public interface LoginService {
      */
     User checkUser(String username, String password);
 
-    int addUser(String id,String username,String password);
+    int addUser(String id,String username,String password,String phoneNumber);
 
     User selectuserByUsername(String username);
 }

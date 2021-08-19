@@ -6,8 +6,9 @@
     </select>
 
     <insert id="addUser" parameterType="java.lang.String">
-        insert into sprint_user values(#{id},
+        insert into sprint_user(id,username,password,phone) values(#{id},
                                        #{username},
-                                       #{password})
+                                       #{password},
+                                       #{phoneNumber})
     </insert>
 </mapper>

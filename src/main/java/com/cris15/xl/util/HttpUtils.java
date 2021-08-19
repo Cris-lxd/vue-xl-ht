@@ -1,5 +1,10 @@
 package com.cris15.xl.util;
 
+import com.github.qcloudsms.SmsMultiSender;
+import com.github.qcloudsms.SmsMultiSenderResult;
+import com.github.qcloudsms.httpclient.HTTPException;
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -126,4 +131,41 @@ public class HttpUtils {
         return result;
     }
 
+
+    /**
+     * 发送短信工具
+     * @param phoneNumber     手机号码
+     * @param timeOut       短信有效时间
+     * @param verifiedCode      验证码
+     * @return
+     */
+    public static SmsMultiSenderResult sendMessage(String[] phoneNumber,String timeOut,String verifiedCode){
+        SmsMultiSenderResult result = null;
+        try {
+            // 短信应用 SDK AppID
+            int appid = 1400561028; // SDK AppID 以1400开头
+            // 短信应用 SDK AppKey
+            String appkey = "599ad28a0643e7f07136d6fbf69938ae";
+            // 需要发送短信的手机号码
+            String[] phoneNumbers = phoneNumber;
+            // 短信模板 ID，需要在短信应用中申请
+            int templateId = 1085146; // NOTE: 这里的模板 ID`7839`只是示例，真实的模板 ID 需要在短信控制台中申请
+            // 签名
+            String smsSign = "Cris个人博客"; // NOTE: 签名参数使用的是`签名内容`，而不是`签名ID`。这里的签名"腾讯云"只是示例，真实的签名需要在短信控制台申请
+            String code = verifiedCode;
+            String[] params = {code, timeOut};
+            SmsMultiSender msender = new SmsMultiSender(appid, appkey);
+            result = msender.sendWithParam("86", phoneNumbers, templateId, params, smsSign, "", "");
+        }catch (HTTPException e) {
+            //HTTP响应码错误
+            e.printStackTrace();
+        } catch (JSONException e) {
+            //JSON解析错误
+            e.printStackTrace();
+        } catch (IOException e) {
+            //网络IO错误
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

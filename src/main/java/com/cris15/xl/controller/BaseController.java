@@ -2,6 +2,7 @@ package com.cris15.xl.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @Author: Cris_liuxd
@@ -34,6 +35,24 @@ public class BaseController {
         result.put(Result.code.name(),"1");
         result.put(Result.message.name(), "失败");
         result.put(Result.data.name(),data);
+        return result;
+    }
+
+    /**
+     * 生成6位随机数
+     * @return
+     */
+    public String getRandomCode(){
+        Random random = new Random();
+        String result = "";
+        for (int i = 0; i < 6; i++) {
+            result += random.nextInt(10);
+        }
+        if(result.charAt(0) == '0'){
+            StringBuilder sb = new StringBuilder(result);
+            sb.replace(0,1,"5");
+            result = sb.toString();
+        }
         return result;
     }
 

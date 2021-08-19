@@ -3,10 +3,8 @@ package com.cris15.xl.controller.rest;
 import com.cris15.xl.controller.BaseController;
 import com.cris15.xl.entity.User;
 import com.cris15.xl.servie.LoginService;
-import com.cris15.xl.util.JWTUtils;
-import com.cris15.xl.util.MD5Utils;
-import com.cris15.xl.util.PassToken;
-import com.cris15.xl.util.UserLoginToken;
+import com.cris15.xl.servie.UserService;
+import com.cris15.xl.util.*;
 import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
@@ -19,10 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @Author: Cris_liuxd
@@ -37,7 +32,17 @@ public class LoginController extends BaseController {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserService userService;
 
+    /**
+     * 登录
+     * @param username
+     * @param password
+     * @param session
+     * @param request
+     * @return
+     */
     @PassToken
     @RequestMapping("/login")
     public Object login(@RequestParam("username") String username, @RequestParam("password") String password, HttpSession session, HttpServletRequest request){
@@ -54,79 +59,94 @@ public class LoginController extends BaseController {
             session.setAttribute("token",token);
             return result(map);
         }else{
-            return errorResult("用户不存在"+session.getAttribute("username"));
+            return result("用户不存在"+session.getAttribute("username"));
         }
     }
 
+    /**
+     * 注册
+     * @param username
+     * @param password
+     * @param phoneNumber
+     * @return
+     */
     @PassToken
     @RequestMapping("/registry")
-    public  Object registry(@RequestParam("username") String username,@RequestParam("password")String password){
+    public  Object registry(@RequestParam("username") String username,@RequestParam("password")String password,@RequestParam("phoneNumber")String phoneNumber){
+        if(StringUtils.isEmpty(username)){
+            return result("用户名不能为空");
+        }
+        if(StringUtils.isEmpty(password)){
+            return result("密码不能为空");
+        }
+        if(StringUtils.isEmpty(phoneNumber)){
+            return result("手机号不能为空");
+        }
+        String result = null;
         User user = loginService.selectuserByUsername(username);
         if(user != null){
-            return errorResult("用户名重复");
+            return result("用户名重复");
         }
         String md5 = MD5Utils.string2Md5(password);
         String id = UUID.randomUUID().toString().replace("-","");
         String id1 = id.replace(id.charAt(0), 'f');
-        int i = loginService.addUser(id1, username, md5);
+        int i = loginService.addUser(id1, username, md5,phoneNumber);
         if(i == 0){
-            return errorResult("注册失败");
+            return result("注册失败");
         }
         return result("注册成功");
     }
 
     /**
      * 获取短信验证码
+     * @param phoneNumber
      * @return
      */
     @PassToken
     @RequestMapping("/getVerifiedCode")
     public Object getVerifiedCode(String phoneNumber){
-        // 短信应用 SDK AppID
-        int appid = 1400561028; // SDK AppID 以1400开头
-        // 短信应用 SDK AppKey
-        String appkey = "599ad28a0643e7f07136d6fbf69938ae";
-        // 需要发送短信的手机号码
-        String[] phoneNumbers = {phoneNumber};
-        // 短信模板 ID，需要在短信应用中申请
-        int templateId = 1085146; // NOTE: 这里的模板 ID`7839`只是示例，真实的模板 ID 需要在短信控制台中申请
-        // 签名
-        String smsSign = "Cris个人博客"; // NOTE: 签名参数使用的是`签名内容`，而不是`签名ID`。这里的签名"腾讯云"只是示例，真实的签名需要在短信控制台申请
-        String verifiedCode = getRandomCode();
-        String[] params = {verifiedCode, "1"};
-        SmsMultiSender msender = new SmsMultiSender(appid, appkey);
-        SmsMultiSenderResult result;
-        try {
-            result = msender.sendWithParam("86", phoneNumbers, templateId, params, smsSign, "", "");
-
-        } catch (HTTPException e) {
-            //HTTP响应码错误
-            e.printStackTrace();
-        } catch (JSONException e) {
-            //JSON解析错误
-            e.printStackTrace();
-        } catch (IOException e) {
-            //网络IO错误
-            e.printStackTrace();
+        if(StringUtils.isEmpty(phoneNumber)){
+            return result("手机号不能为空");
         }
-        return result(verifiedCode);
+        String verifiedCode = getRandomCode();
+        String[] phoneNumbers = new String[]{phoneNumber};
+        //发送短信
+        SmsMultiSenderResult result = HttpUtils.sendMessage(phoneNumbers, "1", verifiedCode);
+        if(result.toString().contains("\"result\":0")){
+            return result(verifiedCode);
+        }else{
+            return result("请检查手机号是否正确,或稍后再试");
+        }
     }
 
+
     /**
-     * 生成6位随机数
+     * 忘记密码
+     * @param username
+     * @param phoneNumber
+     * @param oldPassword
+     * @param newPassword
      * @return
      */
-    public String getRandomCode(){
-        Random random = new Random();
-        String result = "";
-        for (int i = 0; i < 6; i++) {
-            result += random.nextInt(10);
+    @PassToken
+    @RequestMapping("/findPassword")
+    public Object findPassword(String username,String phoneNumber,String oldPassword,String newPassword){
+        if(StringUtils.isEmpty(newPassword)){
+            return result("密码不能为空");
         }
-        if(result.charAt(0) == '0'){
-            StringBuilder sb = new StringBuilder(result);
-            sb.replace(0,1,"5");
-            result = sb.toString();
+        List<User> list = userService.getuserByNameAndPhone(username, phoneNumber,MD5Utils.string2Md5(oldPassword));
+        if(list.size() == 1){
+            if(list.get(0).getUsername().equals(username)){
+                int i = userService.updateUserPwd(username, list.get(0).getId(), newPassword);
+                if(i == 1){
+                    return result("密码修改成功，请重新登陆");
+                }else{
+                    return result("密码更新失败");
+                }
+            }
+        }else{
+            return result("用户名与手机号不符或原密码错误，请检查");
         }
-        return result;
+        return null;
     }
 }

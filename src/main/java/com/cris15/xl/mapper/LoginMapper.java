@@ -23,7 +23,7 @@ public interface LoginMapper {
     /**
      * 创建用户
      */
-    int addUser(@Param("id")String id,@Param("username") String username, @Param("password")String password);
+    int addUser(@Param("id")String id,@Param("username") String username, @Param("password")String password,@Param("phoneNumber")String phoneNumber);
 
     /**
      * 根绝用户名查找
