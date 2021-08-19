@@ -8,7 +8,12 @@ import java.security.MessageDigest;
  * Time: 15:47
  * Project: demotest
  **/
-public class MD5Util {
+public class MD5Utils {
+    /**
+     * <一>
+     * @param str
+     * @return
+     */
     public static String string2Md5(String str) {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
@@ -36,7 +41,10 @@ public class MD5Util {
         }
     }
 
+
+
     public static void main(String[] args) {
-        System.out.println(string2Md5("123"));
+        String s = string2Md5("123");
+        System.out.println(s);
     }
 }

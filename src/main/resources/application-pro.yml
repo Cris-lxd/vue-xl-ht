@@ -1,0 +1,26 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://cris15.top:3306/sprint?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&characterEncoding=utf-8&useAffectedRows=true
+    username: cris
+    password: 970504
+#    url: jdbc:mysql://localhost:3306/sprint?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&characterEncoding=utf-8&useAffectedRows=true
+#    username: root
+#    password: 123456
+#mybatis:
+#  mapper-locations: classpath:mappers/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true     #开启驼峰转换
+
+mybatis-plus:
+  type-aliases-package: com.cris15.xl.entity
+  mapper-locations: classpath:mappers/*.xml
+  configuration:
+    map-underscore-to-camel-case: true    #开启驼峰转换
+
+logging:
+  level:
+    com.cris15.xl.mapper: info

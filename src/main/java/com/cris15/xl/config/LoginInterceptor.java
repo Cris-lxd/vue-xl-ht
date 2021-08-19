@@ -2,21 +2,15 @@ package com.cris15.xl.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.cris15.xl.entity.User;
-import com.cris15.xl.servie.UserService;
-import com.cris15.xl.util.JWTUtil;
+import com.cris15.xl.util.JWTUtils;
 import com.cris15.xl.util.PassToken;
 import com.cris15.xl.util.UserLoginToken;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -27,9 +21,6 @@ import java.lang.reflect.Method;
  * @Description: 进入方法前进行处理
  **/
 public class LoginInterceptor implements HandlerInterceptor {
-    @Autowired
-    private UserService userService;
-
 
     @Override
     public boolean preHandle(HttpServletRequest request,
@@ -46,7 +37,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
             //检查是否有passToken注解，有的话直接跳过
-        Boolean b =  method.isAnnotationPresent(PassToken.class);
+            Boolean b =  method.isAnnotationPresent(PassToken.class);
             if(method.isAnnotationPresent(PassToken.class)){
                 PassToken passToken = method.getAnnotation(PassToken.class);
                 if(passToken.required()){
@@ -63,12 +54,12 @@ public class LoginInterceptor implements HandlerInterceptor {
                     }
                     String userId;
                     try{
-                        userId = JWTUtil.getUserId(token);
+                        userId = JWTUtils.getUserId(token);
                     }catch (JWTDecodeException ex){
                         writeResponse(false,"身份认证失败",request,response);
                         return false;
                     }
-                    int flag = JWTUtil.verify(token);
+                    int flag = JWTUtils.verify(token);
                     if(flag != 0){
                         writeResponse(false,"token校验失败",request,response);
                         return false;
@@ -110,7 +101,7 @@ public class LoginInterceptor implements HandlerInterceptor {
      * @param response
      * @throws IOException
      */
-    public void writeResponse(Boolean code,String message,HttpServletRequest request,
+    public static void writeResponse(Boolean code,String message,HttpServletRequest request,
                          HttpServletResponse response) throws IOException {
         PrintWriter out = null;
         JSONObject res = new JSONObject();

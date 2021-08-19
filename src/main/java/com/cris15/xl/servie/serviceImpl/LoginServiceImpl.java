@@ -3,12 +3,8 @@ package com.cris15.xl.servie.serviceImpl;
 import com.cris15.xl.entity.User;
 import com.cris15.xl.mapper.LoginMapper;
 import com.cris15.xl.servie.LoginService;
-import com.cris15.xl.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: Cris_liuxd

@@ -1,7 +1,8 @@
 package com.cris15.xl.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * Author: Cris_liuxd
@@ -9,8 +10,10 @@ import org.springframework.data.relational.core.mapping.Table;
  * Time: 14:26
  * Project: demotest
  **/
+@TableName("sprint_user")
 public class User {
 
+    @TableId
     private String id;
 
     private String username;

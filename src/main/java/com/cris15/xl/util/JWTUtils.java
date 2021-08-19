@@ -17,7 +17,7 @@ import java.util.Map;
  * Time: 14:36
  * Project: demotest
  **/
-public class JWTUtil {
+public class JWTUtils {
     // 有效时长毫秒数
     private static final long EXPIRE_TIME = 60 * 60 * 24;
 
