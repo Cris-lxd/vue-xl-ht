@@ -3,4 +3,4 @@ app:
 
 spring:
   profiles:
-    active: dev
+    active: pro

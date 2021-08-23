@@ -59,7 +59,7 @@ public class LoginController extends BaseController {
             session.setAttribute("token",token);
             return result(map);
         }else{
-            return result("用户不存在"+session.getAttribute("username"));
+            return errorResult("用户不存在"+session.getAttribute("username"));
         }
     }
 
@@ -74,25 +74,25 @@ public class LoginController extends BaseController {
     @RequestMapping("/registry")
     public  Object registry(@RequestParam("username") String username,@RequestParam("password")String password,@RequestParam("phoneNumber")String phoneNumber){
         if(StringUtils.isEmpty(username)){
-            return result("用户名不能为空");
+            return errorResult("用户名不能为空");
         }
         if(StringUtils.isEmpty(password)){
-            return result("密码不能为空");
+            return errorResult("密码不能为空");
         }
         if(StringUtils.isEmpty(phoneNumber)){
-            return result("手机号不能为空");
+            return errorResult("手机号不能为空");
         }
         String result = null;
         User user = loginService.selectuserByUsername(username);
         if(user != null){
-            return result("用户名重复");
+            return errorResult("用户名重复");
         }
         String md5 = MD5Utils.string2Md5(password);
         String id = UUID.randomUUID().toString().replace("-","");
         String id1 = id.replace(id.charAt(0), 'f');
         int i = loginService.addUser(id1, username, md5,phoneNumber);
         if(i == 0){
-            return result("注册失败");
+            return errorResult("注册失败");
         }
         return result("注册成功");
     }
@@ -106,7 +106,7 @@ public class LoginController extends BaseController {
     @RequestMapping("/getVerifiedCode")
     public Object getVerifiedCode(String phoneNumber){
         if(StringUtils.isEmpty(phoneNumber)){
-            return result("手机号不能为空");
+            return errorResult("手机号不能为空");
         }
         String verifiedCode = getRandomCode();
         String[] phoneNumbers = new String[]{phoneNumber};
@@ -115,7 +115,7 @@ public class LoginController extends BaseController {
         if(result.toString().contains("\"result\":0")){
             return result(verifiedCode);
         }else{
-            return result("请检查手机号是否正确,或稍后再试");
+            return errorResult("请检查手机号是否正确,或稍后再试");
         }
     }
 
@@ -132,7 +132,7 @@ public class LoginController extends BaseController {
     @RequestMapping("/findPassword")
     public Object findPassword(String username,String phoneNumber,String oldPassword,String newPassword){
         if(StringUtils.isEmpty(newPassword)){
-            return result("密码不能为空");
+            return errorResult("密码不能为空");
         }
         List<User> list = userService.getuserByNameAndPhone(username, phoneNumber,MD5Utils.string2Md5(oldPassword));
         if(list.size() == 1){
@@ -141,11 +141,11 @@ public class LoginController extends BaseController {
                 if(i == 1){
                     return result("密码修改成功，请重新登陆");
                 }else{
-                    return result("密码更新失败");
+                    return errorResult("密码更新失败");
                 }
             }
         }else{
-            return result("用户名与手机号不符或原密码错误，请检查");
+            return errorResult("用户名与手机号不符或原密码错误，请检查");
         }
         return null;
     }
