@@ -48,10 +48,11 @@ public class ScheduleTask {
         for (int i = 0; i < files.length; i++) {
             String name = files[i].getName();
             if(files[i].getName().length() > 11){
+                String filename = files[i].getName();
                 files[i].delete();
+                logger.info("删除文件:" + filename + "成功,删除日期：" + StringUtils.dateFormat(new Date()));
             }
         }
-        logger.info("删除成功,删除日期：" + StringUtils.dateFormat(new Date()));
     }
 
 

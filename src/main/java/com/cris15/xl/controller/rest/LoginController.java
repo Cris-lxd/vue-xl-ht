@@ -35,6 +35,7 @@ public class LoginController extends BaseController {
     @Autowired
     private UserService userService;
 
+    private long currentTime;
     /**
      * 登录
      * @param username

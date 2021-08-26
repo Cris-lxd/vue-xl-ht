@@ -14,7 +14,7 @@ import java.util.Date;
 public class StringUtils {
 
     /**
-     * 判断string是否为空
+     * check if string is null or ""
      * @param str
      * @return
      */
@@ -25,9 +25,15 @@ public class StringUtils {
         return false;
     }
 
+    /**
+     * Date type converted to normal time
+     * @param date
+     * @return
+     */
     public static String dateFormat(Date date){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:MM:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
         String res = sdf.format(date);
         return res;
     }
+
 }
