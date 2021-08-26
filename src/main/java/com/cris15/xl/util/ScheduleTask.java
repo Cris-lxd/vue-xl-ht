@@ -41,7 +41,7 @@ public class ScheduleTask {
      * “W”字符：指定离给定日期最近的工作日(周一到周五)
      * “#”字符：表示该月第几个周X。6#3表示该月第3个周五
      */
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 1 ? * 1")
     public void myScheduleTask(){
         File file = new File("/usr/project_list/lxl/logs");
         File[] files = file.listFiles();

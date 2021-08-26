@@ -1,7 +1,9 @@
 package com.cris15.xl.config;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.cris15.xl.entity.User;
 import com.cris15.xl.util.JWTUtils;
 import com.cris15.xl.util.PassToken;
 import com.cris15.xl.util.UserLoginToken;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * @Author: Cris_liuxd
@@ -53,20 +56,31 @@ public class LoginInterceptor implements HandlerInterceptor {
                         return false;
                     }
                     String userId;
+                    //check if userid equals(userId in session)
                     try{
                         userId = JWTUtils.getUserId(token);
-                    }catch (JWTDecodeException ex){
+                        User user = (User) request.getSession().getAttribute("user");
+                        String realuserId = user.getId();
+                        if(!userId.equals(realuserId)){
+                            writeResponse(false,"token校验失败",request,response);
+                            return false;
+                        }
+                    }catch(NullPointerException ex){
+                        writeResponse(false,"用户未登录",request,response);
+                        return false;
+                    }
+                    catch (JWTDecodeException ex){
                         writeResponse(false,"身份认证失败",request,response);
                         return false;
                     }
-                    int flag = JWTUtils.verify(token);
-                    if(flag != 0){
-                        writeResponse(false,"token校验失败",request,response);
-                        return false;
-                    }
+//                    int flag = JWTUtils.verify(token);
+//                    if(flag != 0){
+//                        writeResponse(false,"token校验失败",request,response);
+//                        return false;
+//                    }
                     String token1 = (String) request.getSession().getAttribute("token");
                     if(token1 == null){
-                        writeResponse(false,"用户未登录",request,response);
+                        writeResponse(false,"该用户不存在token信息",request,response);
                         return false;
                     }
                     Boolean tokenStatus = token1.equals(token) == true ? true : false;

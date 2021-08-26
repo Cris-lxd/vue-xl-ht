@@ -46,16 +46,16 @@ public class Aspext {
         String method = request.getMethod();
         String classMethod = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
+        logger.info("-------------------NEW----before request---------------------");
         logger.info("Request{}",new RequestLog(requestURI,remoteAddr,classMethod,args));
-        logger.info("--------------------------before request---------------------");
-
+        logger.info("-------------------------------SQL---------------------------");
     }
 
     @AfterReturning(returning = "result",pointcut = "log()")
     public void doAfterReturn(Object result){
 //        Map map = JSONObject.parseObject(JSONObject.toJSONString(result), Map.class);
         logger.info("--------------------------result-----------------------------");
-        logger.info("result{}",result);
+        logger.info("result{}",result + "\n");
     }
 
 

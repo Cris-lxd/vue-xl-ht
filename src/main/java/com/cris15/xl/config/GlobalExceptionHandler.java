@@ -4,6 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Author: Cris
@@ -19,6 +23,10 @@ public class GlobalExceptionHandler extends Exception{
 
     @ExceptionHandler(Exception.class)
     public void getException(Exception ex){
-        logger.error(ex.getMessage());
+        ex.printStackTrace();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String requestURI = request.getRequestURI();
+        logger.error(requestURI + "————————————" + ex.getMessage());
     }
 }

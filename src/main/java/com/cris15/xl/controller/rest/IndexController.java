@@ -35,8 +35,19 @@ public class IndexController extends BaseController {
     @RequestMapping("/test")
     public List test(@CurrentUser User user){
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.select("id","username","password");
+        queryWrapper.select("id","username","password","phone","avatar");
         List list = userMapper.selectList(queryWrapper);
         return list;
     }
+
+    @UserLoginToken
+    @RequestMapping("/notfound")
+    public void notfoundTest(){
+        String s = "notfound";
+        throw new NotFoundException(s);
+    }
+
+
+
+
 }
