@@ -7,6 +7,9 @@ import com.cris15.xl.entity.User;
 import com.cris15.xl.util.JWTUtils;
 import com.cris15.xl.util.PassToken;
 import com.cris15.xl.util.UserLoginToken;
+import org.apache.http.client.HttpResponseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -29,9 +32,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {    //重写他的预处理方法
-
-
-
 
             String token = request.getHeader("token");
             if(!(handler instanceof HandlerMethod)){
@@ -68,6 +68,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                     }catch(NullPointerException ex){
                         writeResponse(false,"用户未登录",request,response);
                         return false;
+//                        throw new HttpResponseException(401,"no loign");
                     }
                     catch (JWTDecodeException ex){
                         writeResponse(false,"身份认证失败",request,response);
@@ -121,12 +122,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         JSONObject res = new JSONObject();
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
-        request.removeAttribute("user");
-        request.removeAttribute("token");
+        request.getSession().removeAttribute("user");
+        request.getSession().removeAttribute("token");
         res.put("success", code);
         res.put("code",401);
         res.put("message",message);
         out = response.getWriter();
+        response.setStatus(401);
         out.append(res.toString());
     }
 }

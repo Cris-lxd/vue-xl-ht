@@ -32,7 +32,7 @@ public class Aspext {
 
     /**
      * defined the class intercepted by the aspect
-     * the parameters of annotation represent represent any package/any class/any method
+     * the parameters of annotation represent any package/any class/any method
      */
     @Pointcut("execution(* com.cris15.xl.controller.*..*(..))")
     public void log(){}
@@ -47,15 +47,15 @@ public class Aspext {
         String classMethod = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
         logger.info("-------------------NEW----before request---------------------");
-        logger.info("Request{}",new RequestLog(requestURI,remoteAddr,classMethod,args));
-        logger.info("-------------------------------SQL---------------------------");
+        logger.info("Request {}",new RequestLog(requestURI,remoteAddr,classMethod,args));
+        logger.info("-------------------------------Handler---------------------------");
     }
 
     @AfterReturning(returning = "result",pointcut = "log()")
     public void doAfterReturn(Object result){
 //        Map map = JSONObject.parseObject(JSONObject.toJSONString(result), Map.class);
         logger.info("--------------------------result-----------------------------");
-        logger.info("result{}",result + "\n");
+        logger.info("result {}",result + "\n");
     }
 
 

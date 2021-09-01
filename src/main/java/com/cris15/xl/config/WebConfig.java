@@ -19,9 +19,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
-                .addPathPatterns("/**")      //加过滤的路径
-                .excludePathPatterns("/admin/registry")      //添加排除的文件
-                .excludePathPatterns("/admin/login");
+                .addPathPatterns("/**");   //加过滤的路径
+//                .excludePathPatterns("/admin/registry")      //添加排除的文件
+//                .excludePathPatterns("/admin/login");
     }
 
     @Bean

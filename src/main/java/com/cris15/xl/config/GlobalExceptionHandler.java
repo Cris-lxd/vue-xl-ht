@@ -1,7 +1,10 @@
 package com.cris15.xl.config;
 
+import org.apache.ibatis.javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -29,4 +32,6 @@ public class GlobalExceptionHandler extends Exception{
         String requestURI = request.getRequestURI();
         logger.error(requestURI + "————————————" + ex.getMessage());
     }
+
+
 }
